@@ -1,27 +1,69 @@
+let todo=[]
+let users=[]
+let albums = []
+let posts=[]
+
+
+if(localStorage['users'])
+{
+    users=JSON.parse(localStorage['users'])
+}
+
+if(localStorage['todos'])
+{
+    todos=JSON.parse(localStorage['todos'])
+}
+
 function getUsers(done) {
+    if(users && users.length>0)
+    {
+        return done(users)
+    }
+
     $.getJSON('https://jsonplaceholder.typicode.com/users', function (data) {
-        //JSON.stringify(data);
+        localStorage['users']=JSON.stringify(data);
         done(data);
     })
 }
 
 function getAlbums(done) {
+
+    if(albums && albums.length>0)
+    {
+        return done(albums)
+    }
+
+
     $.getJSON('https://jsonplaceholder.typicode.com/albums', function (data) {
-        // JSON.stringify(data);
+        localStorage['albums']=JSON.stringify(data);
         done(data);
     })
 }
 
 function getPosts(done) {
+ 
+    if(posts && posts.length>0)
+    {
+        return done(posts)
+    }
+
+
     $.getJSON('https://jsonplaceholder.typicode.com/posts', function (data) {
-        // JSON.stringify(data);
+        localStorage['posts']=JSON.stringify(data);
         done(data);
     })
 }
 
 function getTodos(done) {
+
+    if(posts && posts.length>0)
+    {
+        return done(posts)
+    }
+
+
     $.getJSON('https://jsonplaceholder.typicode.com/todos', function (data) {
-        // JSON.stringify(data);
+        localStorage['todos']=JSON.stringify(data);
         done(data);
     })
 }
