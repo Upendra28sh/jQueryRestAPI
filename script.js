@@ -1,69 +1,47 @@
-let todo=[]
-let users=[]
+let todo = []
+let users = []
 let albums = []
-let posts=[]
-
-
-if(localStorage['users'])
-{
-    users=JSON.parse(localStorage['users'])
-}
-
-if(localStorage['todos'])
-{
-    todos=JSON.parse(localStorage['todos'])
-}
+let posts = []
 
 function getUsers(done) {
-    if(users && users.length>0)
-    {
+    if (localStorage['users']) {
+        users = JSON.parse(localStorage['users'])
+    }
+
+    if (users && users.length > 0) {
         return done(users)
     }
 
     $.getJSON('https://jsonplaceholder.typicode.com/users', function (data) {
-        localStorage['users']=JSON.stringify(data);
+        localStorage['users'] = JSON.stringify(data);
         done(data);
     })
 }
 
 function getAlbums(done) {
-
-    if(albums && albums.length>0)
-    {
-        return done(albums)
-    }
-
-
     $.getJSON('https://jsonplaceholder.typicode.com/albums', function (data) {
-        localStorage['albums']=JSON.stringify(data);
         done(data);
     })
 }
 
 function getPosts(done) {
- 
-    if(posts && posts.length>0)
-    {
-        return done(posts)
-    }
-
-
     $.getJSON('https://jsonplaceholder.typicode.com/posts', function (data) {
-        localStorage['posts']=JSON.stringify(data);
         done(data);
     })
 }
 
 function getTodos(done) {
 
-    if(posts && posts.length>0)
-    {
+    if (localStorage['todos']) {
+        todos = JSON.parse(localStorage['todos'])
+    }
+    if (posts && posts.length > 0) {
         return done(posts)
     }
 
 
     $.getJSON('https://jsonplaceholder.typicode.com/todos', function (data) {
-        localStorage['todos']=JSON.stringify(data);
+        localStorage['todos'] = JSON.stringify(data);
         done(data);
     })
 }
@@ -80,7 +58,7 @@ function refreshUsers(users) {
         function (user) {
             $('#users-clicked').append(
                 `<div class="col-sm-6 col-md-6 col-lg-4 p-3">
-            <div class="card" style="width: 18rem;">
+                <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">${user.name}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">${user.email}</h6>
@@ -93,7 +71,9 @@ function refreshUsers(users) {
                     </p>
                     <a href="#" class="card-link">${user.phone}</a><br>
                     <a href="#" class="card-link">${user.website}</a>
-                </div>
+                
+                    <a onclick="showTodosOfUser(${user.id})" href="#" class="card-link">Todos</a>
+                    </div>
             </div>
             </div>
             `
@@ -101,6 +81,11 @@ function refreshUsers(users) {
         }
     )
 }
+
+function showTodosOfUser(userId) {
+    toggleActive('todos')
+    refreshTodos(todos, userId)
+  }
 
 function refreshAlbums(albums) {
     albums.forEach(
@@ -118,26 +103,54 @@ function refreshAlbums(albums) {
 }
 
 function refreshPosts(posts) {
-    posts.forEach(
-        function (post) {
-            $('#posts-clicked').append(
-                `<div class="col-sm-6 col-md-6 col-lg-4 p-3">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">${post.title}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">${post.body}</h6>
-                    <p class="card-text">
-                    
-                    </p>
-                    <a href="#" class="card-link"></a><br>
-                    <a href="#" class="card-link"></a>
-                </div>
-            </div>
-            </div>
+    var i = 0;
+    posts.forEach((post) => {
+        i++;
+        $('#posts-clicked').append(
             `
-            )
-        }
-    )
+      <div class="card" style="width: 100%">
+      
+      <div class="card-body">
+      
+        <h3 class="card-title">${post.title}</h3>
+        <p class="card-text">${post.body}</p>
+        <button type="button" class="btn btn-primary btn-sm postbtn">Comments</button>
+        
+        <div id="post${i}" class="postid"> </div>
+        
+      </div>
+    </div>
+      `
+        )
+    })
+    setTimeout(comments, 1);
+}
+
+// ***
+function comments() {
+    var j = 0;
+    $.getJSON('http://jsonplaceholder.typicode.com/comments', function (data) {
+
+        data.forEach(function (comment) {
+            if (comment.postId != j) { j++; }
+
+            $("#post" + j).append(`
+  <h5 class="card-title">name": "${comment.name}"</h5>
+         <p class="card-text"> <h6>email": "${comment.email}"</h6> ${comment.body} </p>
+                                
+                    
+  `);
+        })
+
+    })
+    $('.postbtn').click(function () {
+        var t = $($(this)).next();
+        t.toggle();
+
+    });
+
+
+
 }
 
 function refreshTodos(todos) {
