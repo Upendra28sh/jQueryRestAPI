@@ -71,8 +71,8 @@ function refreshUsers(users) {
                     </p>
                     <a href="#" class="card-link">${user.phone}</a><br>
                     <a href="#" class="card-link">${user.website}</a>
-                
-                    <a onclick="showTodosOfUser(${user.id})" href="#" class="card-link">Todos</a>
+                    <br>
+                    <button onclick="showTodosOfUser(${user.id})" href="#" class="card-link">Todos</button>
                     </div>
             </div>
             </div>
@@ -82,24 +82,55 @@ function refreshUsers(users) {
     )
 }
 
-function showTodosOfUser(userId) {
-    toggleActive('todos')
-    refreshTodos(todos, userId)
-  }
 
 function refreshAlbums(albums) {
+    var k = 0;
     albums.forEach(
         function (album) {
+            k++;
             $('#albums-clicked').append(
                 `<div class="row list-group-item">
                 <span>
                 ${album.title}
                 </span>
+                <br>
+                <button type="button" class="btn btn-primary btn-sm photobtn">View Photos</button>
+                             <div class="photoid row" id="photo${k}">
                 </div>
             `
             )
         }
     )
+    setTimeout(photos, 1);
+}
+
+// ***
+function photos() {
+    var k = 1;
+
+    $.getJSON('https://jsonplaceholder.typicode.com/photos',
+        function (data) {
+            data.forEach(function (pic) {
+                if (pic.albumId != k) {
+                    k++;
+                }
+
+                $(`#photo${k}`).append
+                    (
+                    `
+                <a href="${pic.url}" target="_blank" class="thumbnail">
+                <img src="${pic.thumbnailUrl}">
+                </a>
+                    `
+                    )
+            }
+            )
+        })
+
+    $('.photobtn').click(function () {
+        var u = $($(this)).next();
+        u.toggle();
+    });
 }
 
 function refreshPosts(posts) {
@@ -153,15 +184,24 @@ function comments() {
 
 }
 
-function refreshTodos(todos) {
+function showTodosOfUser(userId) {
+    toggleActive('todos')
+    refreshTodos(todos, userId)
+}
+
+
+function refreshTodos(todos, filterUserId) {
+    if (filterUserId) {
+        todos = todos.filter((todo) => (todo.userId === filterUserId))
+    }
+
     todos.forEach(
         function (todo) {
             $('#todos-clicked').append(
                 `
                 <div class="row list-group-item">
-                <span>
-                ${todo.title}
-                </span>
+                <span class="col-3"><input type="checkbox" ${todo.completed ? 'checked' : ''}></span>
+                <span class="col ${todo.completed ? 'completed-task' : ''}">${todo.title}</span>
                 </div>
                 
             `
@@ -169,6 +209,14 @@ function refreshTodos(todos) {
         }
     )
 }
+
+$(function () {
+    toggleactive('users')
+    getUsers(function (users) {
+        refreshUsers(users);
+    })
+
+})
 
 $(function () {
     $('.tab-users').click(function () {
