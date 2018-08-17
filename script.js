@@ -19,13 +19,29 @@ function getUsers(done) {
 }
 
 function getAlbums(done) {
+    if (localStorage['albums']) {
+        albums = JSON.parse(localStorage['albums'])
+    }
+
+    if (albums && albums.length > 0) {
+        return done(albums)
+    }
     $.getJSON('https://jsonplaceholder.typicode.com/albums', function (data) {
+        localStorage['albums'] = JSON.stringify(data);
         done(data);
     })
 }
 
 function getPosts(done) {
+    if (localStorage['posts']) {
+        posts = JSON.parse(localStorage['posts'])
+    }
+
+    if (posts && posts.length > 0) {
+        return done(posts)
+    }
     $.getJSON('https://jsonplaceholder.typicode.com/posts', function (data) {
+        localStorage['posts'] = JSON.stringify(data);
         done(data);
     })
 }
@@ -72,7 +88,7 @@ function refreshUsers(users) {
                     <a href="#" class="card-link">${user.phone}</a><br>
                     <a href="#" class="card-link">${user.website}</a>
                     <br>
-                    <button onclick="showTodosOfUser(${user.id})" href="#" class="card-link">Todos</button>
+                    <button onclick="showTodosOfUser(${user.id})" href="#" class="btn btn-primary btn-sm card-link">Todos</button>
                     </div>
             </div>
             </div>
@@ -91,7 +107,7 @@ function refreshAlbums(albums) {
             $('#albums-clicked').append(
                 `<div class="row list-group-item">
                 <span>
-                ${album.title}
+                <h3>${album.title}</h3>
                 </span>
                 <br>
                 <button type="button" class="btn btn-primary btn-sm photobtn">View Photos</button>
@@ -185,9 +201,9 @@ function comments() {
 }
 
 function showTodosOfUser(userId) {
-    toggleActive('todos')
+    toggleactive('todos')
     refreshTodos(todos, userId)
-}
+  }  
 
 
 function refreshTodos(todos, filterUserId) {

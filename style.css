@@ -1,35 +1,42 @@
+body {
+    background-image: url("Workspace.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* opacity: 0.5; */
+}
 .completed-task {
     color: grey;
     text-decoration: line-through;
 }
 
-.thumbnail img{
+.thumbnail img {
     margin-bottom: 15px;
     padding-left: 10px;
 }
-    
-.postbtn
-{
-    margin-bottom:10px;
+
+.postbtn {
+    margin-bottom: 10px;
 }
 
-.postid
-{
+.postid {
     display: none;
     border: solid 10px gray;
     padding: 10px;
 }
 
-.photoid
-{
+.photoid {
     display: none;
-     border: solid 10px gray;
-     margin-left:20px;
-     margin-right:20px;
-     padding-top: 10px;
+    border: solid 10px gray;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding-top: 10px;
 }
 
-.photobtn
-{
+.photobtn {
     margin-bottom: 10px;
+}
+
+h1
+{
+    color: white;
 }
